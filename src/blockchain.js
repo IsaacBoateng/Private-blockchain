@@ -128,29 +128,25 @@ class Blockchain {
     submitStar(address, message, signature, star) {
         let self = this;
         return new Promise(async (resolve, reject) => {
-             // Step 1. Sets the time of the message sent 
-            let time = parseInt(message.split(':') [1] ); 
-             // Step 2. Sets the current time                            
-            let currentTime = parseInt(new Date().getTime().toString().slice(0, -3)); 
-             // Step 3. Checks if the time elapsed is less than 5 minutes 
-            if (currentTime - time < 300 ) {  
-            // Step 4. Verifies the message with wallet address and signature                                         
-            if (bitcoinMessage.verify(message, address, signature)) {  
-             // Step 5. Creates the new block with the owner and the star and adds it to the chain                    
-                   // let block = new BlockClass.Block({address: address, star:star});  
-                  //  self._addBlock(block); 
-                  const data = {address: address, star: star }   
-                  const block = new BlockClass.Block(data) 
-                  await self._addBlock(block)
-            // Step 6.Resolve with the new block                                             
-                    resolve(block);         
-                } else {
-                    reject(Error('Message is not verified'))                         
-                }
-            } else {
-                reject(Error('Time elapsed'))  
-            }
-            
+                    // Step 1. Sets the time of the message sent 
+             let time = parseInt(message.split(':')[1]);
+                   // Step 2. Sets the current time 
+             let currentTime = parseInt(new Date().getTime().toString().slice(0, -3));
+                    // Step 3. Checks if the time elapsed is less than 5 minutes 
+             if (currentTime - time < 300) {
+                    // Step 4. Verifies the message with wallet address and signature 
+                    //  let setTrue = true;
+                     if (bitcoinMessage.verify(message, address, signature)) { 
+                         //   if(setTrue) {
+                     let block = new BlockClass.Block({"address": address, "star": star});
+                     self._addBlock(block);
+                     resolve(block);
+                 }  else {
+                     reject(Error('Invalid signature'));
+                 } 
+             } else {
+                 reject(Error('Time elapsed'));
+             } 
         });
     }
 
