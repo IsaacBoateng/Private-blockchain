@@ -16,6 +16,7 @@ const bitcoinMessage = require('bitcoinjs-message');
  Class includes code from:
                     --- https://classroom.udacity.com/nanodegrees/nd1309/parts/cd0596/modules/461cfbe7-0fb3-465e-8cf5-12d39e301a2d/lessons/60e4f4a1-cb48-4ad7-b564-aece78c802ef/concepts/0467aeeb-a507-4480-871a-cad8cfd52a41
                     --- https://www.w3schools.com/js/js_promise.asp
+                    --- https://knowledge.udacity.com/questions/512452
 
 
 */
@@ -76,7 +77,7 @@ class Blockchain {
             // sets  current block time
             block.time = new Date().getTime().toString().slice(0,-3);
             // checks for the height to assign the previousBlockHash
-            if(self.chain.length > 0 ){
+            if(self.chain.length > 0 ) {
                 block.previousBlockHash = self.chain[self.chain.length-1].hash; 
             }
             // Calculates block hash
@@ -85,7 +86,11 @@ class Blockchain {
                 self.chain.push(block);
                 //increases height
                 self.height++; 
-                //resolve the new block
+                const errorLog = await self.validateChain();
+                if(errorLog.length !== 0) {
+                 resolve({message: "Invalid Block", error: errorLog, status: false});
+               }
+                console.log("the len is", errorLog)
                 resolve(block); 
                 console.log(block)
         });
